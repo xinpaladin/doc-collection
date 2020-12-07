@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  #os = "bento/ubuntu-18.04"
+  os = "centos/7.2"
+  net_ip = "192.168.50"
+  config.vbguest.auto_update = false
+  config.vm.define :"bk-master", primary: true do |master_config|
+    master_config.vm.provider "virtualbox" do |vb|
+        vb.memory = "4096"
+        vb.cpus = 2
+        vb.name = "bk-master"
+    end
+    
+    master_config.vm.box = "#{os}"
+    master_config.vm.box_check_update = false
+    master_config.vm.host_name = 'bk-master'
+    master_config.vm.network "private_network", ip: "#{net_ip}.10"
+    master_config.vm.network "private_network", ip: "#{net_ip}.10"
+    master_config.vm.synced_folder "/home/zhangx016/Documents/vagrant/share", "/home/vagrant/share"
+
+  end
+
+
+  [
+    ["bk-minion1",    "#{net_ip}.11",    "1024",    os ],
+    ["bk-minion2",    "#{net_ip}.12",    "1024",    os ],
+  ].each do |vmname,ip,mem,os|
+    config.vm.define "#{vmname}" do |minion_config|
+      minion_config.vm.provider "virtualbox" do |vb|
+          vb.memory = "#{mem}"
+          vb.cpus = 1
+          vb.name = "#{vmname}"
+      end
+      minion_config.vm.box_check_update = false
+      minion_config.vm.box = "#{os}"
+      minion_config.vm.hostname = "#{vmname}"
+      minion_config.vm.network "private_network", ip: "#{ip}"
+      minion_config.vm.synced_folder "/home/zhangx016/Documents/vagrant/share", "/home/vagrant/share"
+
+    end
+  end
+end

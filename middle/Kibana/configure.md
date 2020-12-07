@@ -1,0 +1,1 @@
+# [配置](https://www.elastic.co/guide/en/kibana/7.10/settings.html)
