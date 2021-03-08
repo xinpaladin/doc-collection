@@ -39,3 +39,8 @@ salt --batch-size 10 '*' state.apply
 #runner实时展示master收到的events
 salt-run state.event pretty=True
 ```
+
+
+```
+sudo salt -a pam '*' test.ping
+```
