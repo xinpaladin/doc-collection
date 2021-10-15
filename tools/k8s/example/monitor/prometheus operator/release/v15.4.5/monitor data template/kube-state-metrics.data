@@ -1807,16 +1807,16 @@ kube_ingress_metadata_resource_version{namespace="sms-core",ingress="sms-core-ap
 kube_ingress_metadata_resource_version{namespace="msp-ps",ingress="msp-ps-product-service-ing"} 3.7437996e+07
 # HELP kube_ingress_path Ingress host, paths and backend service information.
 # TYPE kube_ingress_path gauge
-kube_ingress_path{namespace="msp-cus",ingress="msp-cus-customer-service-ing",host="caas-core-uat.foresealife.com",path="/msp-cus-customer-service(:[0-9]+)*(/.*)*",service_name="msp-cus-customer-service-svc",service_port="80"} 1
-kube_ingress_path{namespace="sms-core",ingress="sms-core-api-ing",host="caas-core-uat.foresealife.com",path="/sms-core-api(:[0-9]+)*(/.*)*",service_name="sms-core-api-svc",service_port="80"} 1
-kube_ingress_path{namespace="msp-ps",ingress="msp-ps-product-service-ing",host="caas-core-uat.foresealife.com",path="/msp-ps-product-service(:[0-9]+)*(/.*)*",service_name="msp-ps-product-service-svc",service_port="80"} 1
-kube_ingress_path{namespace="msp-prs",ingress="msp-prs-proposal-service-ing",host="caas-core-uat.foresealife.com",path="/msp-prs-proposal-service(:[0-9]+)*(/.*)*",service_name="msp-prs-proposal-service-svc",service_port="80"} 1
-kube_ingress_path{namespace="kube-mon",ingress="monitor-kube-prometheus-st-thanos-gateway",host="prom-thanos-core-uat.foresealife.com",path="/",service_name="monitor-kube-prometheus-st-prometheus",service_port="10901"} 1
-kube_ingress_path{namespace="jenkins",ingress="msp-ps-product-service-ing",host="caas-core-uat.foresealife.com",path="/msp-ps_product-service(:[0-9]+)*(/.*)*",service_name="msp-ps-product-service-svc",service_port="80"} 1
-kube_ingress_path{namespace="rook-ceph",ingress="ceph-dashboard",host="ceph-core-uat.foresealife.com",path="/",service_name="rook-ceph-mgr-dashboard",service_port="7000"} 1
-kube_ingress_path{namespace="kube-mon",ingress="monitor-grafana",host="grafana-core-uat.foresealife.com",path="/",service_name="monitor-grafana",service_port="80"} 1
-kube_ingress_path{namespace="rook-ceph",ingress="yangyt-endpoint",host="bucket-core-uat.foresealife.com",path="/",service_name="rook-ceph-rgw-yangyt-store",service_port="54468"} 1
-kube_ingress_path{namespace="sms-core",ingress="sms-core-batch-ing",host="caas-core-uat.foresealife.com",path="/sms-core-batch(:[0-9]+)*(/.*)*",service_name="sms-core-batch-svc",service_port="80"} 1
+kube_ingress_path{namespace="msp-cus",ingress="msp-cus-customer-service-ing",host="caas-core-uat.example.com",path="/msp-cus-customer-service(:[0-9]+)*(/.*)*",service_name="msp-cus-customer-service-svc",service_port="80"} 1
+kube_ingress_path{namespace="sms-core",ingress="sms-core-api-ing",host="caas-core-uat.example.com",path="/sms-core-api(:[0-9]+)*(/.*)*",service_name="sms-core-api-svc",service_port="80"} 1
+kube_ingress_path{namespace="msp-ps",ingress="msp-ps-product-service-ing",host="caas-core-uat.example.com",path="/msp-ps-product-service(:[0-9]+)*(/.*)*",service_name="msp-ps-product-service-svc",service_port="80"} 1
+kube_ingress_path{namespace="msp-prs",ingress="msp-prs-proposal-service-ing",host="caas-core-uat.example.com",path="/msp-prs-proposal-service(:[0-9]+)*(/.*)*",service_name="msp-prs-proposal-service-svc",service_port="80"} 1
+kube_ingress_path{namespace="kube-mon",ingress="monitor-kube-prometheus-st-thanos-gateway",host="prom-thanos-core-uat.example.com",path="/",service_name="monitor-kube-prometheus-st-prometheus",service_port="10901"} 1
+kube_ingress_path{namespace="jenkins",ingress="msp-ps-product-service-ing",host="caas-core-uat.example.com",path="/msp-ps_product-service(:[0-9]+)*(/.*)*",service_name="msp-ps-product-service-svc",service_port="80"} 1
+kube_ingress_path{namespace="rook-ceph",ingress="ceph-dashboard",host="ceph-core-uat.example.com",path="/",service_name="rook-ceph-mgr-dashboard",service_port="7000"} 1
+kube_ingress_path{namespace="kube-mon",ingress="monitor-grafana",host="grafana-core-uat.example.com",path="/",service_name="monitor-grafana",service_port="80"} 1
+kube_ingress_path{namespace="rook-ceph",ingress="yangyt-endpoint",host="bucket-core-uat.example.com",path="/",service_name="rook-ceph-rgw-yangyt-store",service_port="54468"} 1
+kube_ingress_path{namespace="sms-core",ingress="sms-core-batch-ing",host="caas-core-uat.example.com",path="/sms-core-batch(:[0-9]+)*(/.*)*",service_name="sms-core-batch-svc",service_port="80"} 1
 # HELP kube_ingress_tls Ingress TLS host and secret information.
 # TYPE kube_ingress_tls gauge
 # HELP kube_job_labels Kubernetes labels converted to Prometheus labels.

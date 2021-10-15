@@ -189,7 +189,7 @@ grafana:
     annotations: {}
     enabled: true
     hosts:
-      - grafana-core-uat.foresealife.com
+      - grafana-core-uat.example.com
     labels: {}
     path: /
     tls: []

@@ -52,16 +52,16 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-      smtp_from: zhangx016@foresealife.com
+      smtp_from: zhangx016@example.com
       smtp_smarthost: 10.60.233.185:10025
-      smtp_hello: mail.foresealife.com
-      smtp_auth_username: 'zhangx016@foresealife.com'
+      smtp_hello: mail.example.com
+      smtp_auth_username: 'zhangx016@example.com'
       smtp_auth_password: 'hebjzG.8520'
     receivers:
       - name: 'null'
       - name: 'team-X-mails'
         email_configs:
-        - to: 'zhangx016@foresealife.com'
+        - to: 'zhangx016@example.com'
     route:
       group_by:
         - job
@@ -201,7 +201,7 @@ grafana:
     annotations: {}
     enabled: true
     hosts: 
-      - grafana-core-uat.foresealife.com
+      - grafana-core-uat.example.com
     labels: {}
     path: /
     tls: []

@@ -257,7 +257,7 @@ queryFrontend:
     apiVersion: null
     certManager: false
     enabled: false
-    hostname: prom-thanos-core-uat.foresealife.com
+    hostname: prom-thanos-core-uat.example.com
     path: /
     pathType: ImplementationSpecific
     secrets: []

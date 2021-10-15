@@ -11,7 +11,7 @@ alertmanager:
     externalUrl: null
     forceEnableClusterMode: false
     image:
-      repository: caas-harbor.foresealife.com/quay.io/prometheus/alertmanager
+      repository: caas-harbor.example.com/quay.io/prometheus/alertmanager
       sha: ''
       tag: v0.21.0
     initContainers: []
@@ -189,7 +189,7 @@ grafana:
     annotations: {}
     enabled: true
     hosts:
-      - caas-core-uat.foresealife.com
+      - caas-core-uat.example.com
     labels: {}
     path: /
     tls: []
@@ -229,7 +229,7 @@ kube-state-metrics:
   image:
     pullPolicy: IfNotPresent
     repository: >-
-      caas-harbor.foresealife.com/k8s.gcr.io/kube-state-metrics/kube-state-metrics
+      caas-harbor.example.com/k8s.gcr.io/kube-state-metrics/kube-state-metrics
     tag: v1.9.8
 kubeApiServer:
   enabled: true
@@ -448,7 +448,7 @@ prometheus:
     externalUrl: ''
     ignoreNamespaceSelectors: false
     image:
-      repository: caas-harbor.foresealife.com/quay.io/prometheus/prometheus
+      repository: caas-harbor.example.com/quay.io/prometheus/prometheus
       sha: ''
       tag: v2.26.0
     initContainers: []
@@ -579,7 +579,7 @@ prometheus-node-exporter:
     jobLabel: node-exporter
   image:
     pullPolicy: IfNotPresent
-    repository: caas-harbor.foresealife.com/quay.io/prometheus/node-exporter
+    repository: caas-harbor.example.com/quay.io/prometheus/node-exporter
     tag: v1.1.2
   tolerations:
     - effect: NoExecute
@@ -617,7 +617,7 @@ prometheusOperator:
   image:
     pullPolicy: IfNotPresent
     repository: >-
-      caas-harbor.foresealife.com/quay.io/prometheus-operator/prometheus-operator
+      caas-harbor.example.com/quay.io/prometheus-operator/prometheus-operator
     sha: ''
     tag: v0.47.0
   kubeletService:
@@ -629,7 +629,7 @@ prometheusOperator:
   podLabels: {}
   prometheusConfigReloaderImage:
     repository: >-
-      caas-harbor.foresealife.com/quay.io/prometheus-operator/prometheus-config-reloader
+      caas-harbor.example.com/quay.io/prometheus-operator/prometheus-config-reloader
     sha: ''
     tag: v0.47.0
   prometheusInstanceNamespaces: []

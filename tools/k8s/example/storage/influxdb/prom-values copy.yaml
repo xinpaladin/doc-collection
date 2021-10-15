@@ -62,7 +62,7 @@ ingress:
   annotations: {}
   className: null
   enabled: false
-  hostname: influxdb-core-uat.foresealife.com
+  hostname: influxdb-core-uat.example.com
   path: /
   tls: false
 initScripts:

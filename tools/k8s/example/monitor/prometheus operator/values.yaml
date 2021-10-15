@@ -188,7 +188,7 @@ grafana:
     annotations: {}
     enabled: true
     hosts:
-      - caas-core-uat.foresealife.com
+      - caas-core-uat.example.com
     labels: {}
     path: /
     tls: []

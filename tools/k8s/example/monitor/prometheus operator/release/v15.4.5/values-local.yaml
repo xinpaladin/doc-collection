@@ -188,7 +188,7 @@ grafana:
     annotations: {}
     enabled: true
     hosts:
-      - grafana-rancher-uat.foresealife.com
+      - grafana-rancher-uat.example.com
     labels: {}
     path: /
     tls: []

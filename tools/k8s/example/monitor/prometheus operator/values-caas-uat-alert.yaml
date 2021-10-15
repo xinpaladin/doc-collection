@@ -52,32 +52,32 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-      smtp_from: k8s-prom-monitor@foresealife.com
-      smtp_hello: mail.foresealife.com
-      smtp_smarthost: mail.foresealife.com
+      smtp_from: k8s-prom-monitor@example.com
+      smtp_hello: mail.example.com
+      smtp_smarthost: mail.example.com
     receivers:
       - name: 'null'
       - email_configs:
-          - to: zhangx016@foresealife.com
+          - to: zhangx016@example.com
         name: team-X-mails
       - email_configs:
-          - to: huangx004@foresealife.com
+          - to: huangx004@example.com
         name: team-H-mails
       - email_configs:
-          - to: yangyt001@foresealife.com
+          - to: yangyt001@example.com
         name: team-Y-mails
       - email_configs:
-          - to: dinghq001@foresealife.com
+          - to: dinghq001@example.com
         name: team-D-mails
       - email_configs:
-          - to: jiangjx001@foresealife.com
+          - to: jiangjx001@example.com
         name: team-J-mails
     route:
       group_by:
         - job
       group_interval: 5m
       group_wait: 30s
-      receiver: zhangx016@foresealife.com
+      receiver: zhangx016@example.com
       repeat_interval: 12h
       routes:
         - match:
@@ -227,7 +227,7 @@ grafana:
     annotations: {}
     enabled: true
     hosts:
-      - grafana-core-uat.foresealife.com
+      - grafana-core-uat.example.com
     labels: {}
     path: /
     tls: []
@@ -605,7 +605,7 @@ prometheus:
     annotations: {}
     enabled: true
     hosts:
-      - prom-thanos-core-uat.foresealife.com
+      - prom-thanos-core-uat.example.com
     labels: {}
     nodePort: 30901
     paths: []
