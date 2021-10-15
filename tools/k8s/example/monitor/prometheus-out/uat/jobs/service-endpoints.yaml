@@ -1,0 +1,35 @@
+  - job_name: 'kubernetes-service-endpoints'
+    bearer_token_file: k8s.token
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+    kubernetes_sd_configs:
+    - role: endpoints
+      api_server: https://10.60.208.25:6443  # apiserver 地址
+      bearer_token_file: k8s.token
+      tls_config:
+        insecure_skip_verify: true
+    relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_service_label_(.+)
+    - source_labels: [__meta_kubernetes_service_label_component]
+      regex: apiserver
+      action: drop
+    - source_labels: [__meta_kubernetes_service_k8s_app]
+      regex: kubelet
+      action: drop
+    - source_labels: [__meta_kubernetes_namespace]
+      action: replace
+      target_label: kubernetes_namespace
+    - source_labels: [__meta_kubernetes_service_name]
+      action: replace
+      target_label: kubernetes_name
+    - source_labels: [__address__]
+      action: replace
+      target_label: instance
+    - target_label: __address__
+      replacement: 10.60.208.25:6443
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_pod_container_port_number]
+      regex: ([^;]+);([^;]+);([^;]+)
+      target_label: __metrics_path__
+      replacement: /api/v1/namespaces/${1}/pods/http:${2}:${3}/proxy/metrics

@@ -1,0 +1,12 @@
+    - match:
+        selector: '{app="ingress-nginx"}'
+        stages:
+          - regex:
+              expression: .*(?P<hits>GET /.*)
+          - metrics:
+              nginx_hits:
+                config:
+                  action: inc
+                description: Total nginx requests
+                source: hits
+                type: Counter

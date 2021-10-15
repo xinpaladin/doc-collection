@@ -1,0 +1,38 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+ name: sms-flow
+ namespace: jenkins
+spec:
+  filters:
+    - concat:
+        key: message
+        multiline_end_regexp: /\n$/
+        separator: ""
+    - parser:
+        key_name: log
+        remove_key_name_field: true
+        reserve_data: true
+        parse:
+          type: multi_format
+          patterns:
+          - format: json
+            time_key: time
+            time_format: "%Y-%m-%dT%H:%M:%S.%NZ"
+          - format: regexp
+            expression: /^(?<time>.+) (?<stream>stdout|stderr) [^ ]* (?<log>.*)$/
+            time_format: "%Y-%m-%dT%H:%M:%S.%N%:z"
+    - record_transformer:
+        remove_keys: $.docker.container_id,$.kubernetes.container_image_id,$.kubernetes.pod_id,$.kubernetes.namespace_id,$.kubernetes.master_url,$.kubernetes.labels.pod-template-hash
+        records:
+        - app_id: "101011"
+        - service: SMS-CORE
+        - ip_address:  192.167.152.81 
+        - topic: qh_app_raw_log
+  match:
+    - select:
+        labels:
+          app: smsdelivery-label
+  selectors: {}
+  localOutputRefs:
+    - demo-output

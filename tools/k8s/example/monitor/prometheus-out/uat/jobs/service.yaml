@@ -1,0 +1,25 @@
+  - job_name: 'kubernetes-services'
+    scheme: https
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    bearer_token_file: k8s.token
+    tls_config:
+      insecure_skip_verify: true
+    kubernetes_sd_configs:
+    - role: service
+      api_server: https://10.60.208.25:6443  # apiserver 地址
+      bearer_token_file: k8s.token
+      tls_config:
+        insecure_skip_verify: true
+    relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - action: labelmap
+      regex: __meta_kubernetes_service_label_(.+)
+    - source_labels: [__meta_kubernetes_namespace]
+      target_label: kubernetes_namespace
+    - source_labels: [__meta_kubernetes_service_name]
+      target_label: kubernetes_name

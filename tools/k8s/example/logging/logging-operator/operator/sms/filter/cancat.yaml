@@ -1,0 +1,5 @@
+- concat:
+    key: message
+    partial_key: "partial_message"
+    separator: ""
+    multiline_end_regexp: /\n$/

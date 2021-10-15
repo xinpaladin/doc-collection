@@ -1,0 +1,83 @@
+  - job_name: kube-system/rancher-monitoring-coredns/0
+    honor_timestamps: true
+    scrape_interval: 1m
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    kubernetes_sd_configs:
+    - role: endpoints
+      api_server: https://10.60.208.25:6443  # apiserver 地址
+      bearer_token_file: k8s.token
+      namespaces:
+        names:
+        - kube-system
+    bearer_token_file: k8s.token
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_service_label_app]
+      separator: ;
+      regex: rancher-monitoring-coredns
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_service_label_release]
+      separator: ;
+      regex: rancher-monitoring
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_endpoint_port_name]
+      separator: ;
+      regex: http-metrics
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+      separator: ;
+      regex: Node;(.*)
+      target_label: node
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+      separator: ;
+      regex: Pod;(.*)
+      target_label: pod
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_namespace]
+      separator: ;
+      regex: (.*)
+      target_label: namespace
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_kubernetes_service_name]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_kubernetes_pod_name]
+      separator: ;
+      regex: (.*)
+      target_label: pod
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_kubernetes_service_name]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_service_label_jobLabel]
+      separator: ;
+      regex: (.+)
+      target_label: job
+      replacement: ${1}
+      action: replace
+    - target_label: __address__
+      replacement: 10.60.208.25:6443
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_pod_container_port_number]
+      regex: ([^;]+);([^;]+);([^;]+)
+      target_label: __metrics_path__
+      replacement: /api/v1/namespaces/${1}/pods/http:${2}:${3}/proxy/metrics
+    - separator: ;
+      regex: (.*)
+      target_label: endpoint
+      replacement: http-metrics
+      action: replace

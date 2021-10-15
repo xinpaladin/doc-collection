@@ -1,0 +1,1336 @@
+
+global:
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  evaluation_interval: 1m
+  external_labels:
+    prometheus: cattle-monitoring-system/rancher-monitoring-prometheus
+    prometheus_replica: prometheus-rancher-monitoring-prometheus-0
+alerting:
+  alert_relabel_configs:
+  - separator: ;
+    regex: prometheus_replica
+    replacement: $1
+    action: labeldrop
+  alertmanagers:
+  - kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names:
+        - cattle-monitoring-system
+    scheme: http
+    path_prefix: /
+    timeout: 10s
+    api_version: v2
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_service_name]
+      separator: ;
+      regex: rancher-monitoring-alertmanager
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_endpoint_port_name]
+      separator: ;
+      regex: web
+      replacement: $1
+      action: keep
+rule_files:
+- /etc/prometheus/rules/prometheus-rancher-monitoring-prometheus-rulefiles-0/*.yaml
+scrape_configs:
+- job_name: cattle-monitoring-system/rancher-monitoring-alertmanager/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    separator: ;
+    regex: rancher-monitoring-alertmanager
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_self_monitor]
+    separator: ;
+    regex: "true"
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: web
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: web
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-grafana/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    separator: ;
+    regex: grafana
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: nginx-http
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: nginx-http
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-kube-controller-manager/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  proxy_url: http://pushprox-kube-controller-manager-proxy.cattle-monitoring-system.svc:8080
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: kube-controller-manager
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: pushprox-kube-controller-manager-client
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_provider]
+    separator: ;
+    regex: kubernetes
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: component
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_pushprox_exporter]
+    separator: ;
+    regex: (.+)
+    target_label: pushprox_exporter
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: metrics
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-kube-etcd/0
+  honor_timestamps: true
+  params:
+    _scheme:
+    - https
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  proxy_url: http://pushprox-kube-etcd-proxy.cattle-monitoring-system.svc:8080
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: kube-etcd
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: pushprox-kube-etcd-client
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_provider]
+    separator: ;
+    regex: kubernetes
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: component
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_pushprox_exporter]
+    separator: ;
+    regex: (.+)
+    target_label: pushprox_exporter
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: metrics
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-kube-proxy/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  proxy_url: http://pushprox-kube-proxy-proxy.cattle-monitoring-system.svc:8080
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: kube-proxy
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: pushprox-kube-proxy-client
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_provider]
+    separator: ;
+    regex: kubernetes
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: component
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_pushprox_exporter]
+    separator: ;
+    regex: (.+)
+    target_label: pushprox_exporter
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: metrics
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-kube-scheduler/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  proxy_url: http://pushprox-kube-scheduler-proxy.cattle-monitoring-system.svc:8080
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: kube-scheduler
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: pushprox-kube-scheduler-client
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_provider]
+    separator: ;
+    regex: kubernetes
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: component
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_pushprox_exporter]
+    separator: ;
+    regex: (.+)
+    target_label: pushprox_exporter
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: metrics
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-kube-state-metrics/0
+  honor_labels: true
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    separator: ;
+    regex: kube-state-metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: http
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: http
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-node-exporter/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    separator: ;
+    regex: prometheus-node-exporter
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_jobLabel]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: metrics
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-operator/0
+  honor_labels: true
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    separator: ;
+    regex: rancher-monitoring-operator
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: http
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: http
+    action: replace
+- job_name: cattle-monitoring-system/rancher-monitoring-prometheus/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - cattle-monitoring-system
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    separator: ;
+    regex: rancher-monitoring-prometheus
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_self_monitor]
+    separator: ;
+    regex: "true"
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: nginx-http
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: nginx-http
+    action: replace
+- job_name: default/rancher-monitoring-apiserver/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - default
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    server_name: kubernetes
+    insecure_skip_verify: false
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: apiserver
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_provider]
+    separator: ;
+    regex: kubernetes
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: https
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_component]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: https
+    action: replace
+- job_name: kube-system/rancher-monitoring-coredns/0
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    separator: ;
+    regex: rancher-monitoring-coredns
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_release]
+    separator: ;
+    regex: rancher-monitoring
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: http-metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_jobLabel]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: http-metrics
+    action: replace
+- job_name: kube-system/rancher-monitoring-kubelet/0
+  honor_labels: true
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: kubelet
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: https-metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: https-metrics
+    action: replace
+  - source_labels: [__metrics_path__]
+    separator: ;
+    regex: (.*)
+    target_label: metrics_path
+    replacement: $1
+    action: replace
+- job_name: kube-system/rancher-monitoring-kubelet/1
+  honor_labels: true
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics/cadvisor
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: kubelet
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: https-metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: https-metrics
+    action: replace
+  - source_labels: [__metrics_path__]
+    separator: ;
+    regex: (.*)
+    target_label: metrics_path
+    replacement: $1
+    action: replace
+- job_name: kube-system/rancher-monitoring-kubelet/2
+  honor_labels: true
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics/probes
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: kubelet
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: https-metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: https-metrics
+    action: replace
+  - source_labels: [__metrics_path__]
+    separator: ;
+    regex: (.*)
+    target_label: metrics_path
+    replacement: $1
+    action: replace
+- job_name: kube-system/rancher-monitoring-kubelet/3
+  honor_labels: true
+  honor_timestamps: true
+  scrape_interval: 1m
+  scrape_timeout: 10s
+  metrics_path: /metrics/resource/v1alpha1
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: kubelet
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    separator: ;
+    regex: https-metrics
+    replacement: $1
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Node;(.*)
+    target_label: node
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+    separator: ;
+    regex: Pod;(.*)
+    target_label: pod
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    separator: ;
+    regex: (.*)
+    target_label: namespace
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: service
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    separator: ;
+    regex: (.*)
+    target_label: pod
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    separator: ;
+    regex: (.*)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
+  - separator: ;
+    regex: (.*)
+    target_label: endpoint
+    replacement: https-metrics
+    action: replace
+  - source_labels: [__metrics_path__]
+    separator: ;
+    regex: (.*)
+    target_label: metrics_path
+    replacement: $1
+    action: replace
+

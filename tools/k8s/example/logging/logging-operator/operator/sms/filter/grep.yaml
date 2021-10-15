@@ -1,0 +1,4 @@
+- grep:
+    regexp:
+    - key: first
+      pattern: /^5\d\d$/

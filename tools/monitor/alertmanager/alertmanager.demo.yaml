@@ -1,0 +1,39 @@
+global:
+  resolve_timeout: 5m
+  smtp_from: zhangx016@example.com
+  smtp_smarthost: 10.60.233.185:10025
+  smtp_hello: mail.example.com
+  smtp_auth_username: 'zhangx016@example.com'
+  smtp_auth_password: 'hebjzG.8520'
+receivers:
+- name: 'null'
+- name: 'team-X-mails'
+  email_configs:
+  - to: 'zhangx016@example.com'
+- name: 'team-Y-mails'
+  email_configs:
+  - to: 'yangyt001@example.com'
+- name: 'team-H-mails'
+  email_configs:
+  - to: 'huangx004@example.com'
+route:
+  group_by:
+  - job
+  group_interval: 5m
+  group_wait: 30s
+  receiver: 'null'
+  repeat_interval: 12h
+  routes:
+  - receiver: "team-X-mails"
+    group_wait: 10s
+    matchers:
+    - role="test"
+    routes:
+    - matchers:
+      - severity="warning"
+      receiver: team-Y-mails
+    - matchers:
+      - severity="critical"
+      receiver: team-Z-mails
+templates:
+- /etc/alertmanager/config/*.tmpl

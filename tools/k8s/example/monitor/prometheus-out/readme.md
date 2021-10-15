@@ -1,0 +1,91 @@
+部署外部的prometheus来监控多个k8s集群
+
+
+
+```
+curl -k --location --request GET 'https://10.60.189.22:10250/metrics/resource/v1alpha1' \
+curl -k --location --request GET 'https://10.60.189.22:10250/metrics' \
+curl -k --location --request GET 'https://10.60.189.22:10250/metrics/resource' \
+--header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwcm9tZXRoZXVzLXRva2VuLXY4Zzh2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJiYTM0YTg2Yi1mYTA3LTQyMmUtODg3MC1hYTg5Nzk0NjlhNTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246cHJvbWV0aGV1cyJ9.kcMKRex6ky5ln6Zd578IphG_YAFEheNOHZv_y-FcYU9Rt30-NsBDLqgzLoWiS-gzMuUExbRd9IpWZ09aAiAIVeQSKhnzBr86_xHDIGRKbP_ph5GZMVdVx6HcXO2NE5H3md3CnsxMujSyos_GQzqXQp5IWi8MEsDXSA5M1slPgZ5AFh1Lsuxc_77hTbq2IxZ_0E21pj_97zUCYar9OzguHnwZ7VcP50Zb5E3LDjIQacORnuZGVXP4rFSEIXx9Brj5rtGnbBKEpvNuFWtELp6B_EtPit-tNwNLId6G7s_oYgOxCgp3BktIcOb3trBR4Gut_vLLaLAX2WtBqhtYfhavtQ'
+```
+
+curl -k --location --request GET \
+'https://10.60.208.25:6443/api/v1/namespaces/cattle-logging-system/pods/http:kibana-75bfd98477-nbh6b:5601/proxy/metrics' \
+--header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwcm9tZXRoZXVzLXRva2VuLXY4Zzh2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJiYTM0YTg2Yi1mYTA3LTQyMmUtODg3MC1hYTg5Nzk0NjlhNTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246cHJvbWV0aGV1cyJ9.kcMKRex6ky5ln6Zd578IphG_YAFEheNOHZv_y-FcYU9Rt30-NsBDLqgzLoWiS-gzMuUExbRd9IpWZ09aAiAIVeQSKhnzBr86_xHDIGRKbP_ph5GZMVdVx6HcXO2NE5H3md3CnsxMujSyos_GQzqXQp5IWi8MEsDXSA5M1slPgZ5AFh1Lsuxc_77hTbq2IxZ_0E21pj_97zUCYar9OzguHnwZ7VcP50Zb5E3LDjIQacORnuZGVXP4rFSEIXx9Brj5rtGnbBKEpvNuFWtELp6B_EtPit-tNwNLId6G7s_oYgOxCgp3BktIcOb3trBR4Gut_vLLaLAX2WtBqhtYfhavtQ'
+
+
+
+https://10.60.208.25:6443/api/v1/namespaces/cattle-logging-system/pods/http:rancher-logging-7b4888d8bc-vzzzn:8080/proxy/metrics
+
+集群内
+http://10.42.5.13:8080/metrics
+
+api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy/?orgId=1
+
+curl -k --location --request GET \
+https://10.60.208.25:6443/api/v1/namespaces/kube-system/services/https:rancher-monitoring-kubelet.kube-system.svc:10250/proxy/probe \
+--header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwcm9tZXRoZXVzLXRva2VuLXY4Zzh2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJiYTM0YTg2Yi1mYTA3LTQyMmUtODg3MC1hYTg5Nzk0NjlhNTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246cHJvbWV0aGV1cyJ9.kcMKRex6ky5ln6Zd578IphG_YAFEheNOHZv_y-FcYU9Rt30-NsBDLqgzLoWiS-gzMuUExbRd9IpWZ09aAiAIVeQSKhnzBr86_xHDIGRKbP_ph5GZMVdVx6HcXO2NE5H3md3CnsxMujSyos_GQzqXQp5IWi8MEsDXSA5M1slPgZ5AFh1Lsuxc_77hTbq2IxZ_0E21pj_97zUCYar9OzguHnwZ7VcP50Zb5E3LDjIQacORnuZGVXP4rFSEIXx9Brj5rtGnbBKEpvNuFWtELp6B_EtPit-tNwNLId6G7s_oYgOxCgp3BktIcOb3trBR4Gut_vLLaLAX2WtBqhtYfhavtQ'
+
+
+
+
+curl -k --location --request GET https://10.60.208.25:10250/metrics/probes \
+--header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwcm9tZXRoZXVzLXRva2VuLXY4Zzh2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJiYTM0YTg2Yi1mYTA3LTQyMmUtODg3MC1hYTg5Nzk0NjlhNTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246cHJvbWV0aGV1cyJ9.kcMKRex6ky5ln6Zd578IphG_YAFEheNOHZv_y-FcYU9Rt30-NsBDLqgzLoWiS-gzMuUExbRd9IpWZ09aAiAIVeQSKhnzBr86_xHDIGRKbP_ph5GZMVdVx6HcXO2NE5H3md3CnsxMujSyos_GQzqXQp5IWi8MEsDXSA5M1slPgZ5AFh1Lsuxc_77hTbq2IxZ_0E21pj_97zUCYar9OzguHnwZ7VcP50Zb5E3LDjIQacORnuZGVXP4rFSEIXx9Brj5rtGnbBKEpvNuFWtELp6B_EtPit-tNwNLId6G7s_oYgOxCgp3BktIcOb3trBR4Gut_vLLaLAX2WtBqhtYfhavtQ'
+
+
+
+
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwcm9tZXRoZXVzLXRva2VuLXY4Zzh2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJiYTM0YTg2Yi1mYTA3LTQyMmUtODg3MC1hYTg5Nzk0NjlhNTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246cHJvbWV0aGV1cyJ9.kcMKRex6ky5ln6Zd578IphG_YAFEheNOHZv_y-FcYU9Rt30-NsBDLqgzLoWiS-gzMuUExbRd9IpWZ09aAiAIVeQSKhnzBr86_xHDIGRKbP_ph5GZMVdVx6HcXO2NE5H3md3CnsxMujSyos_GQzqXQp5IWi8MEsDXSA5M1slPgZ5AFh1Lsuxc_77hTbq2IxZ_0E21pj_97zUCYar9OzguHnwZ7VcP50Zb5E3LDjIQacORnuZGVXP4rFSEIXx9Brj5rtGnbBKEpvNuFWtELp6B_EtPit-tNwNLId6G7s_oYgOxCgp3BktIcOb3trBR4Gut_vLLaLAX2WtBqhtYfhavtQ
+
+
+
+curl --location --request GET http://10.60.208.26:2379/metrics \
+--header 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJwcm9tZXRoZXVzLXRva2VuLXY4Zzh2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6InByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJiYTM0YTg2Yi1mYTA3LTQyMmUtODg3MC1hYTg5Nzk0NjlhNTUiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246cHJvbWV0aGV1cyJ9.kcMKRex6ky5ln6Zd578IphG_YAFEheNOHZv_y-FcYU9Rt30-NsBDLqgzLoWiS-gzMuUExbRd9IpWZ09aAiAIVeQSKhnzBr86_xHDIGRKbP_ph5GZMVdVx6HcXO2NE5H3md3CnsxMujSyos_GQzqXQp5IWi8MEsDXSA5M1slPgZ5AFh1Lsuxc_77hTbq2IxZ_0E21pj_97zUCYar9OzguHnwZ7VcP50Zb5E3LDjIQacORnuZGVXP4rFSEIXx9Brj5rtGnbBKEpvNuFWtELp6B_EtPit-tNwNLId6G7s_oYgOxCgp3BktIcOb3trBR4Gut_vLLaLAX2WtBqhtYfhavtQ'
+
+
+
+
+curl --location --request GET http://10.60.208.26:2379/metrics \
+--header 'Authorization: Bearer 
+eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJtb25pdG9yLWt1YmUtcHJvbWV0aGV1cy1zdC1wcm9tZXRoZXVzLXRva2VuLXJrZmhuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6Im1vbml0b3Ita3ViZS1wcm9tZXRoZXVzLXN0LXByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyZTI0MTMyMC1jYzFjLTRhN2YtOWE4Mi05Nzc0ZmEyYzBhMzIiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246bW9uaXRvci1rdWJlLXByb21ldGhldXMtc3QtcHJvbWV0aGV1cyJ9.POw7Wi27gye9FX23ZBkHq2FQO6l81xVQ21N2Hv9RcnrNUgubev1XPZ1942BbU19yQbbyOBfY516lZlFXv7_yWg6BAUKlzcOr5dicD9X2hldrmzWD3OQBC1G_Qzt8bCQ08e1kAMO4albRYU1Ep-wbJkbj9m9GZnMX12H7H5SrgmsfPCb2-VZWeIrahWqjFuGnlEDiVJZw0BzuTyvgiBNYsXGaZgd5hMEVl4yjeZZ8hkgc-PEUUx6pd8QnMHm3oQRQQ_5HqvTuTeotaYkGohFY69kavrQSwi2LGJM2g2_SBvE2dyfp4AVrg4P2yKdFPY1sNYuIkDzHLJfevrg58IoAvg/var/run/secrets/kubernetes.io/serviceaccount'
+
+
+
+curl --location -k --request GET https://10.60.208.26:2379/metrics \
+--header 'Authorization: Bearer 
+eyJhbGciOiJSUzI1NiIsImtpZCI6IlI4Z3RMeG5ZeWV5emZRcmt5YktpaVJPdTdqWFF2aWtvT2hla3J6Y3dLbWcifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLW1vbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJtb25pdG9yLWt1YmUtcHJvbWV0aGV1cy1zdC1wcm9tZXRoZXVzLXRva2VuLXJrZmhuIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6Im1vbml0b3Ita3ViZS1wcm9tZXRoZXVzLXN0LXByb21ldGhldXMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyZTI0MTMyMC1jYzFjLTRhN2YtOWE4Mi05Nzc0ZmEyYzBhMzIiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1tb246bW9uaXRvci1rdWJlLXByb21ldGhldXMtc3QtcHJvbWV0aGV1cyJ9.POw7Wi27gye9FX23ZBkHq2FQO6l81xVQ21N2Hv9RcnrNUgubev1XPZ1942BbU19yQbbyOBfY516lZlFXv7_yWg6BAUKlzcOr5dicD9X2hldrmzWD3OQBC1G_Qzt8bCQ08e1kAMO4albRYU1Ep-wbJkbj9m9GZnMX12H7H5SrgmsfPCb2-VZWeIrahWqjFuGnlEDiVJZw0BzuTyvgiBNYsXGaZgd5hMEVl4yjeZZ8hkgc-PEUUx6pd8QnMHm3oQRQQ_5HqvTuTeotaYkGohFY69kavrQSwi2LGJM2g2_SBvE2dyfp4AVrg4P2yKdFPY1sNYuIkDzHLJfevrg58IoAvg/var/run/secrets/kubernetes.io/serviceaccount'
+
+
+
+/ssl/kube-etcd-10-60-208-24-key.pem --peer-client-cert-auth=true --heartbeat-interval=500 --peer-trusted-ca-file=/etc/kubernetes/ssl/kube-ca.pem --data-dir=/var/lib/rancher/etcd/ --name=etcd-k8s-master-2 --initial-cluster-state=existing --trusted-ca-file=/etc/kubernetes/ssl/kube-ca.pem --cert-file=/etc/kubernetes/ssl/kube-etcd-10-60-208-24.pem --advertise-client-urls=https://10.60.208.24:2379,https://10.60.208.24:4001 --client-cert-auth=true --enable-v2=true --listen-client-urls=https://0.0.0.0:2379 --initial-advertise-peer-urls=https://10.60.208.24:2380 --listen-peer-urls=https://0.0.0.0:2380 --initial-cluster=etcd-k8s-master-3=https://10.60.208.25:2380,etcd-k8s-master-2=https://10.60.208.24:2380,etcd-k8s-master-1=https://10.60.208.26:2380 --peer-cert-file=/etc/kubernetes/ssl/kube-etcd-10-60-208-24.pem --peer-key-file=/etc/kubernetes/ssl/kube-etcd-10-60-208-24-key.pem 
+
+
+curl --cacert /etc/kubernetes/ssl/kube-ca.pem --cert /etc/kubernetes/ssl/kube-etcd-10-60-208-24.pem --key /etc/kubernetes/ssl/kube-etcd-10-60-208-24-key.pem https://10.60.208.26:2379/metrics
+
+curl -k --cert /etc/kubernetes/ssl/kube-etcd-10-60-208-24.pem --key /etc/kubernetes/ssl/kube-etcd-10-60-208-24-key.pem https://10.60.208.26:2379/metrics
+
+
+kubectl -n kube-mon create secret generic etcd-certs --from-file=/etc/kubernetes/ssl/kube-ca.pem --from-file=/etc/kubernetes/ssl/kube-etcd-10-60-208-24-key.pem --from-file=/etc/kubernetes/ssl/kube-etcd-10-60-208-24.pem
+
+curl --cacert /qhapp/rancher/k3s/server/tls/etcd/server-ca.crt --cert /qhapp/rancher/k3s/server/tls/etcd/client.crt --key /qhapp/rancher/k3s/server/tls/etcd/client.key http://10.60.83.64:2379/metrics
+
+
+curl --cacert /qhapp/rancher/k3s/server/tls/etcd/server-ca.crt --cert /qhapp/rancher/k3s/server/tls/etcd/server-client.crt --key /qhapp/rancher/k3s/server/tls/etcd/server-client.key https://10.60.83.64:2379/metrics
+
+
+curl --cert /qhapp/rancher/k3s/server/tls/etcd/server-client.crt --cert-type PEM --cacert /qhapp/rancher/k3s/server/tls/etcd/server-ca.crt --key /qhapp/rancher/k3s/server/tls/etcd/server-client.key --key-type PEM https://10.60.83.64:2379/metrics -vvv
+
+
+
+curl --key-type PEM --cert-type PEM --cert /qhapp/rancher/k3s/server/tls/etcd/peer-server-client.crt --cacert /qhapp/rancher/k3s/server/tls/etcd/peer-ca.crt --key /qhapp/rancher/k3s/server/tls/etcd/peer-server-client.key https://10.60.83.64:2379/metrics -vvv
+
+
+
+openssl pkcs12 -export -in /qhapp/rancher/k3s/server/tls/etcd/peer-server-client.crt -inkey /qhapp/rancher/k3s/server/tls/etcd/peer-server-client.key -out cert-and-key.pfx
+
+
+curl -k --cert ./cacert.pem --key ./key.pem https://10.60.208.26:2379/metrics
+
+
+wget --certificate-type=PEM --certificate=/qhapp/rancher/k3s/server/tls/etcd/server-client.crt --ca-certificate=/qhapp/rancher/k3s/server/tls/etcd/server-ca.crt --private-key-type=PEM --private-key=/qhapp/rancher/k3s/server/tls/etcd/server-client.key https://10.60.83.64:2379/metrics -vvv

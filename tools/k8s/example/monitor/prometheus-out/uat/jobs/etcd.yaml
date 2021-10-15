@@ -1,0 +1,103 @@
+  - job_name: cattle-monitoring-system/rancher-monitoring-kube-etcd/0
+    honor_timestamps: true
+    params:
+      _scheme:
+      - https
+    scrape_interval: 1m
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    kubernetes_sd_configs:
+    - role: endpoints
+      api_server: https://10.60.208.25:6443 # apiserver 地址
+      bearer_token_file: k8s.token
+      tls_config:
+        insecure_skip_verify: true
+    scheme: https
+    bearer_token_file: k8s.token
+    tls_config:
+      insecure_skip_verify: true
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_service_label_component]
+      separator: ;
+      regex: kube-etcd
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_service_label_k8s_app]
+      separator: ;
+      regex: pushprox-kube-etcd-client
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_service_label_provider]
+      separator: ;
+      regex: kubernetes
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_service_label_release]
+      separator: ;
+      regex: rancher-monitoring
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_endpoint_port_name]
+      separator: ;
+      regex: metrics
+      replacement: $1
+      action: keep
+    - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+      separator: ;
+      regex: Node;(.*)
+      target_label: node
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
+      separator: ;
+      regex: Pod;(.*)
+      target_label: pod
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_namespace]
+      separator: ;
+      regex: (.*)
+      target_label: namespace
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_kubernetes_service_name]
+      separator: ;
+      regex: (.*)
+      target_label: service
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_kubernetes_pod_name]
+      separator: ;
+      regex: (.*)
+      target_label: pod
+      replacement: $1
+      action: replace
+    - source_labels: [__meta_kubernetes_pod_label_component]
+      separator: ;
+      regex: (.+)
+      target_label: component
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_pod_label_pushprox_exporter]
+      separator: ;
+      regex: (.+)
+      target_label: pushprox_exporter
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_service_name]
+      separator: ;
+      regex: (.*)
+      target_label: job
+      replacement: ${1}
+      action: replace
+    - source_labels: [__meta_kubernetes_service_label_component]
+      separator: ;
+      regex: (.+)
+      target_label: job
+      replacement: ${1}
+      action: replace
+    - separator: ;
+      regex: (.*)
+      target_label: endpoint
+      replacement: metrics
+      action: replace

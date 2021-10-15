@@ -1,0 +1,124 @@
+affinity: {}
+backup:
+  annotations: {}
+  enabled: false
+  persistence:
+    accessMode: ReadWriteOnce
+    annotations: null
+    enabled: false
+    size: 8Gi
+  podAnnotations: {}
+  resources:
+    requests:
+      ephemeral-storage: 8Gi
+  schedule: 0 0 * * *
+  startingDeadlineSeconds: ''
+backupRetention:
+  annotations: {}
+  daysToRetain: 7
+  enabled: false
+  podAnnotations: {}
+  resources:
+    requests: null
+  schedule: 0 0 * * *
+  startingDeadlineSeconds: null
+config:
+  collectd: {}
+  continuous_queries: {}
+  coordinator: {}
+  data: 
+    dir: /qhapp/influxdb/data
+    wal-dir: /qhapp/influxdb/wal
+    series-id-set-cache-size: 100
+  graphite: {}
+  http: 
+    auth-enabled: true
+  logging: {}
+  meta: 
+    dir: /qhapp/influxdb/meta
+  monitor: {}
+  opentsdb: {}
+  reporting_disabled: false
+  retention: {}
+  rpc: {}
+  shard_precreation: {}
+  subscriber: {}
+  tls: {}
+  udp: {}
+enterprise:
+  clusterSize: 4
+  enabled: false
+  licensekey: {}
+  meta:
+    clusterSize: 3
+    image:
+      tag: meta
+    resources: {}
+    seed: dead-beef-cafe-bae
+env: {}
+envFromSecret: {}
+extraContainers: {}
+image:
+  pullPolicy: IfNotPresent
+  repository: influxdb
+  tag: 1.8.0-alpine
+ingress:
+  annotations: {}
+  className: null
+  enabled: false
+  hostname: influxdb-core-uat.foresealife.com
+  path: /
+  tls: false
+initScripts:
+  enabled: true
+  scripts:
+    init.iql: |+
+      CREATE DATABASE "prometheus" WITH DURATION 30d REPLICATION 1 NAME "rp_30d"
+
+livenessProbe: {}
+nodeSelector: {}
+persistence:
+  accessMode: ReadWriteOnce
+  annotations: null
+  enabled: true
+  size: 8Gi
+  storageClass: "nfs-client"
+# volumes:
+#   - name: prom-influxdb-storage
+#     persistentVolumeClaim:            
+#       claimName: prom-influxdb-data-prom-influxdb-0
+# mountPoints:
+#   - name: prom-influxdb-storage
+#     mountPath: /qhapp
+# podAnnotations: {}
+podLabels: {}
+readinessProbe: {}
+resources: {}
+securityContext: {}
+service:
+  type: ClusterIP
+serviceAccount:
+  annotations: {}
+  create: true
+  name: null
+setDefaultUser:
+  activeDeadline: 300
+  backoffLimit: 6
+  enabled: true
+  hookDeletePolicy: hook-succeeded
+  image: 'appropriate/curl:latest'
+  restartPolicy: OnFailure
+  user:
+    privileges: WITH ALL PRIVILEGES
+    username: admin
+    ## User password
+    ## single quotes must be escaped (\')
+    ## Default: (Randomly generated 10 characters of AlphaNum)
+    password: aaaaa888
+    ## The user name and password are obtained from an existing secret. The expected
+    ## keys are `influxdb-user` and `influxdb-password`.
+    ## If set, the username and password values above are ignored.
+    # existingSecret: influxdb-auth
+startupProbe:
+  enabled: true
+tolerations: []

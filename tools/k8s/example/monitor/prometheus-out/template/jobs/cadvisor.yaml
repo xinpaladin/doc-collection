@@ -1,0 +1,15 @@
+  - job_name: 'kubernetes-cadvisor'
+    scheme: https
+    metrics_path: /metrics/cadvisor
+    bearer_token_file: ${token}
+    tls_config:
+      insecure_skip_verify: true
+    kubernetes_sd_configs:
+    - role: node
+      api_server: https://${other_apiserver_address}  # apiserver 地址
+      bearer_token_file: k8s.token
+      tls_config:
+        insecure_skip_verify: true
+    relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)

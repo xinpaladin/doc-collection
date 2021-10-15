@@ -1,0 +1,38 @@
+affinity: {}
+image:
+  pullPolicy: IfNotPresent
+  repository: 10.60.97.145:8082/k8s-staging-sig-storage/nfs-subdir-external-provisioner
+  tag: v4.0.2
+imagePullSecrets: []
+labels: {}
+leaderElection:
+  enabled: true
+nfs:
+  mountOptions: null
+  path: /kubernetes
+  server: 10.60.80.81
+nodeSelector: {}
+podAnnotations: {}
+podSecurityPolicy:
+  enabled: false
+rbac:
+  create: true
+replicaCount: 1
+resources: {}
+serviceAccount:
+  annotations: {}
+  create: true
+  name: null
+storageClass:
+  accessModes: ReadWriteOnce
+  allowVolumeExpansion: true
+  annotations: {}
+  archiveOnDelete: true
+  create: true
+  defaultClass: false
+  name: nfs-client
+  onDelete: null
+  pathPattern: null
+  reclaimPolicy: Delete
+strategyType: Recreate
+tolerations: []

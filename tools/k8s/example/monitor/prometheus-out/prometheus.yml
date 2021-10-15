@@ -1,0 +1,76 @@
+# prometheus.yml
+global:
+  scrape_interval: 15s
+  scrape_timeout: 15s
+scrape_configs:
+  - job_name: kubernetes-apiservers
+    kubernetes_sd_configs:  # kubernetes 自动发现
+    - api_server: https://10.60.208.25:6443  # apiserver 地址
+      role: endpoints  # node 类型的自动发现
+      bearer_token_file: k8s.token
+      tls_config:
+        insecure_skip_verify: true
+    scheme: https
+    bearer_token_file: k8s.token
+    tls_config:
+      insecure_skip_verify: true
+    # Keep only the default/kubernetes service endpoints for the https port. This
+    # will add targets for each API server which Kubernetes adds an endpoint to
+    # the default/kubernetes service.
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+      action: keep
+      regex: default;kubernetes;https
+  - job_name: k8s-cadvisor
+    honor_timestamps: true
+    metrics_path: /metrics
+    scheme: https
+    kubernetes_sd_configs:  # kubernetes 自动发现
+    - api_server: https://10.60.208.25:6443  # apiserver 地址
+      role: node  # node 类型的自动发现
+      bearer_token_file: k8s.token
+      tls_config:
+        insecure_skip_verify: true
+    bearer_token_file: k8s.token
+    tls_config:
+      insecure_skip_verify: true
+    relabel_configs:
+    - action: labelmap
+      regex: __meta_kubernetes_node_label_(.+)
+    - separator: ;
+      regex: (.*)
+      target_label: __address__
+      replacement: 10.60.208.25:6443
+      action: replace
+    - source_labels: [__meta_kubernetes_node_name]
+      separator: ;
+      regex: (.+)
+      target_label: __metrics_path__
+      replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
+      action: replace
+  - job_name: 'kubernetes-services'
+
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+
+    kubernetes_sd_configs:
+    - role: service
+
+    relabel_configs:
+    # Example relabel to probe only some services that have "example.io/should_be_probed = true" annotation
+    #  - source_labels: [__meta_kubernetes_service_annotation_example_io_should_be_probed]
+    #    action: keep
+    #    regex: true
+    - source_labels: [__address__]
+      target_label: __param_target
+    - target_label: __address__
+      replacement: blackbox-exporter.example.com:9115
+    - source_labels: [__param_target]
+      target_label: instance
+    - action: labelmap
+      regex: __meta_kubernetes_service_label_(.+)
+    - source_labels: [__meta_kubernetes_namespace]
+      target_label: kubernetes_namespace
+    - source_labels: [__meta_kubernetes_service_name]
+      target_label: kubernetes_name

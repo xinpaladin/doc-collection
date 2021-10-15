@@ -1,0 +1,7 @@
+# HELP prober_probe_total [ALPHA] Cumulative number of a liveness, readiness or startup probe for a container by result.
+# TYPE prober_probe_total counter
+prober_probe_total{container="cluster-register",namespace="cattle-system",pod="cattle-cluster-agent-676d5b97f7-spw4k",pod_uid="ec7a27b0-7bfa-41d0-9475-d532f2e5ecfe",probe_type="Readiness",result="failed"} 1
+prober_probe_total{container="cluster-register",namespace="cattle-system",pod="cattle-cluster-agent-676d5b97f7-spw4k",pod_uid="ec7a27b0-7bfa-41d0-9475-d532f2e5ecfe",probe_type="Readiness",result="successful"} 23198
+prober_probe_total{container="node-exporter",namespace="kube-mon",pod="monitor-prometheus-node-exporter-kz8m8",pod_uid="634bc8a1-26c7-4a40-b8db-c92311a9449f",probe_type="Liveness",result="successful"} 10735
+prober_probe_total{container="node-exporter",namespace="kube-mon",pod="monitor-prometheus-node-exporter-kz8m8",pod_uid="634bc8a1-26c7-4a40-b8db-c92311a9449f",probe_type="Readiness",result="successful"} 10735
+prober_probe_total{container="promtail",namespace="logging",pod="loki-promtail-7p7nm",pod_uid="efead787-0e58-4890-9fb2-90fb400a1768",probe_type="Readiness",result="successful"} 2550

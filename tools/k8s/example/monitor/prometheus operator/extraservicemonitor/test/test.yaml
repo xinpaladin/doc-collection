@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: test-prometheus
+    role: alert-rules
+  name: test-alert-rules
+  namespace: kube-mon
+spec:
+  groups:
+  - name: node_cpu_total_warn
+    rules:
+    - alert: cpu
+      annotations:
+        description: cpu use
+        message: {{ $labels.instance }} CPU system used is more than 50%
+        severity_level: critical
+        instance: {{ $labels.instance }}
+      expr: |
+        sum by (mode, instance)(irate(node_cpu_seconds_total{mode="system",job="nodes"}[5m])) * 100 > 20
+      for: 5m
+      labels:
+        severity: warning
+        role: test
+  - name: node_cpu_total_critical
+    rules:
+    - alert: cpu
+      annotations:
+        description: cpu use
+        message: {{ $labels.instance }} CPU system used is more than 50%
+        severity_level: critical
+        instance: {{ $labels.instance }}
+      expr: |
+        sum by (mode, instance)(irate(node_cpu_seconds_total{mode="system",job="nodes"}[5m])) * 100 > 15
+      for: 5m
+      labels:
+        severity: warning
+        role: test
+
+    
+  

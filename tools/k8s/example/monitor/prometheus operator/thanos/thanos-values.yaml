@@ -1,0 +1,562 @@
+bucketweb:
+  affinity: {}
+  enabled: false
+  extraContainers: []
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  hostAliases: []
+  ingress:
+    annotations: {}
+    apiVersion: null
+    certManager: false
+    enabled: false
+    hostname: thanos-bucketweb.local
+    path: /
+    pathType: ImplementationSpecific
+    secrets: []
+    tls: false
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  pdb:
+    create: false
+    minAvailable: 1
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  refresh: 30m
+  replicaCount: 1
+  resources:
+    limits: {}
+    requests: {}
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    http:
+      port: 8080
+    labelSelectorsOverride: {}
+    targetPort: http
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  strategyType: RollingUpdate
+  timeout: 5m
+  tolerations: []
+clusterDomain: cluster.local
+compactor:
+  affinity: {}
+  consistencyDelay: 30m
+  enabled: false
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  hostAliases: []
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  persistence:
+    accessModes:
+      - ReadWriteOnce
+    enabled: true
+    size: 8Gi
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  resources:
+    limits: {}
+    requests: {}
+  retentionResolution1h: 10y
+  retentionResolution5m: 30d
+  retentionResolutionRaw: 30d
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    http:
+      port: 9090
+    labelSelectorsOverride: {}
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  strategyType: RollingUpdate
+  tolerations: []
+image:
+  pullPolicy: IfNotPresent
+  registry: docker.io
+  repository: bitnami/thanos
+  tag: 0.21.1-scratch-r0
+kubeVersion: null
+metrics:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+minio:
+  accessKey:
+    password: ''
+  defaultBuckets: thanos
+  enabled: false
+  secretKey:
+    password: ''
+query:
+  affinity: {}
+  autoscaling:
+    enabled: false
+  dnsDiscovery:
+    enabled: true
+  enabled: true
+  extraContainers: []
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  grpcTLS:
+    client:
+      ca: null
+      cert: null
+      key: null
+      secure: false
+      servername: null
+    server:
+      ca: null
+      cert: null
+      key: null
+      secure: false
+  hostAliases: []
+  ingress:
+    annotations: {}
+    apiVersion: null
+    certManager: false
+    enabled: false
+    grpc:
+      annotations: {}
+      apiVersion: null
+      certManager: false
+      enabled: false
+      hostname: thanos-grpc.local
+      path: /
+      pathType: ImplementationSpecific
+      secrets: []
+    hostname: thanos.local
+    path: /
+    pathType: ImplementationSpecific
+    secrets: []
+    tls: false
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  pdb:
+    create: false
+    minAvailable: 1
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  pspEnabled: false
+  rbac:
+    create: false
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  replicaCount: 1
+  replicaLabel:
+    - prometheus_replica
+  resources:
+    limits: {}
+    requests: {}
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    grpc:
+      port: 10901
+    http:
+      port: 9090
+    labelSelectorsOverride: {}
+    targetPort: http
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  stores:
+    - >-
+      dnssrv+_grpc._tcp.monitor-kube-prometheus-st-thanos-discovery.kube-mon.svc.cluster.local
+  strategyType: RollingUpdate
+  tolerations: []
+queryFrontend:
+  affinity: {}
+  autoscaling:
+    enabled: false
+  enabled: true
+  extraContainers: []
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  hostAliases: []
+  ingress:
+    annotations: {}
+    apiVersion: null
+    certManager: false
+    enabled: false
+    hostname: prom-thanos-core-uat.foresealife.com
+    path: /
+    pathType: ImplementationSpecific
+    secrets: []
+    tls: false
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  pdb:
+    create: false
+    minAvailable: 1
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  pspEnabled: false
+  rbac:
+    create: false
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  replicaCount: 1
+  resources:
+    limits: {}
+    requests: {}
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    http:
+      port: 9090
+    labelSelectorsOverride: {}
+    targetPort: http
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  strategyType: RollingUpdate
+  tolerations: []
+receive:
+  affinity: {}
+  autoscaling:
+    enabled: false
+  enabled: false
+  extraContainers: []
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  grpc:
+    gracePeriod: 2m
+    server:
+      ca: null
+      cert: null
+      key: null
+      secure: false
+  hostAliases: []
+  ingress:
+    annotations: {}
+    apiVersion: null
+    certManager: false
+    enabled: false
+    hostname: thanos-receive.local
+    path: /
+    pathType: ImplementationSpecific
+    secrets: []
+    tls: false
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  pdb:
+    create: false
+    minAvailable: 1
+  persistence:
+    accessModes:
+      - ReadWriteOnce
+    enabled: true
+    size: 8Gi
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  pspEnabled: false
+  rbac:
+    create: false
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  replicaCount: 1
+  replicaLabel: replica
+  replicationFactor: 1
+  resources:
+    limits: {}
+    requests: {}
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    additionalHeadless: false
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    grpc:
+      port: 10901
+    http:
+      port: 10902
+    labelSelectorsOverride: {}
+    remoteWrite:
+      port: 19291
+    targetPort: http
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  strategyType: RollingUpdate
+  tolerations: []
+  tsdbRetention: 15d
+  updateStrategyType: RollingUpdate
+ruler:
+  affinity: {}
+  alertmanagers: []
+  dnsDiscovery:
+    enabled: true
+  enabled: false
+  evalInterval: 1m
+  extraContainers: []
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  hostAliases: []
+  ingress:
+    annotations: {}
+    apiVersion: null
+    certManager: false
+    enabled: false
+    hostname: thanos-ruler.local
+    path: /
+    pathType: ImplementationSpecific
+    secrets: []
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  pdb:
+    create: false
+    minAvailable: 1
+  persistence:
+    accessModes:
+      - ReadWriteOnce
+    enabled: true
+    size: 8Gi
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  podManagementPolicy: OrderedReady
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  replicaCount: 1
+  replicaLabel: replica
+  resources:
+    limits: {}
+    requests: {}
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    additionalHeadless: false
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    grpc:
+      port: 10901
+    http:
+      port: 9090
+    labelSelectorsOverride: {}
+    targetPort: http
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  tolerations: []
+  updateStrategyType: RollingUpdate
+storegateway:
+  affinity: {}
+  autoscaling:
+    enabled: false
+  enabled: false
+  extraEnv: []
+  extraFlags: []
+  extraVolumeMounts: []
+  extraVolumes: []
+  grpc:
+    tls:
+      ca: null
+      cert: null
+      enabled: false
+      existingSecret: {}
+      key: null
+  hostAliases: []
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  logFormat: logfmt
+  logLevel: info
+  nodeAffinityPreset:
+    key: ''
+    type: ''
+    values: []
+  nodeSelector: {}
+  pdb:
+    create: false
+    minAvailable: 1
+  persistence:
+    accessModes:
+      - ReadWriteOnce
+    enabled: true
+    size: 8Gi
+  podAffinityPreset: ''
+  podAnnotations: {}
+  podAntiAffinityPreset: soft
+  podLabels: {}
+  podManagementPolicy: OrderedReady
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: http
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+  replicaCount: 1
+  resources:
+    limits: {}
+    requests: {}
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+  service:
+    additionalHeadless: false
+    annotations: {}
+    externalTrafficPolicy: Cluster
+    grpc:
+      port: 10901
+    http:
+      port: 9090
+    labelSelectorsOverride: {}
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+  tolerations: []
+  updateStrategyType: RollingUpdate
+volumePermissions:
+  enabled: false
+  image:
+    pullPolicy: Always
+    registry: docker.io
+    repository: bitnami/bitnami-shell
+    tag: 10-debian-10-r99
+global:
+  systemDefaultRegistry: ''
