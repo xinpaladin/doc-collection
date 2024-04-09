@@ -1,0 +1,238 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-trivy
+  namespace: system-harbor
+  labels:
+    type: harbor
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-path
+  local:
+    path: /qhapp/harbor-storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master-1
+                - k8s-worker-1
+                - k8s-worker-2
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-jobservice
+  namespace: system-harbor
+  labels:
+    type: harbor
+spec:
+  capacity:
+    storage: 50Gi
+  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-path
+  local:
+    path: /qhapp/harbor-storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master-1
+                - k8s-worker-1
+                - k8s-worker-2
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-registry
+  namespace: system-harbor
+  labels:
+    type: harbor
+spec:
+  capacity:
+    storage: 350Gi
+  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-path
+  local:
+    path: /qhapp/harbor-storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master-1
+                - k8s-worker-1
+                - k8s-worker-2
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-database
+  namespace: system-harbor
+  labels:
+    type: harbor
+spec:
+  capacity:
+    storage: 1Gi
+  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-path
+  local:
+    path: /qhapp/harbor-storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master-1
+                - k8s-worker-1
+                - k8s-worker-2
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor-redis
+  namespace: system-harbor
+  labels:
+    type: harbor
+spec:
+  capacity:
+    storage: 1Gi
+  # volumeMode field requires BlockVolume Alpha feature gate to be enabled.
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-path
+  local:
+    path: /qhapp/harbor-storage
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master-1
+                - k8s-worker-1
+                - k8s-worker-2
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-registry-pvc
+  namespace: system-harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 350Gi
+  storageClassName: "local-path"
+  volumeMode: Filesystem
+  volumeName: harbor-registry
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-trivy-pvc
+  namespace: system-harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: "local-path"
+  volumeMode: Filesystem
+  volumeName: harbor-trivy
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-jobservice-pvc
+  namespace: system-harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: "local-path"
+  volumeMode: Filesystem
+  volumeName: harbor-jobservice
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-database-pvc
+  namespace: system-harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "local-path"
+  volumeMode: Filesystem
+  volumeName: harbor-database
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-redis-pvc
+  namespace: system-harbor
+spec:
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "local-path"
+  volumeMode: Filesystem
+  volumeName: harbor-redis

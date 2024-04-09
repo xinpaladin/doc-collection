@@ -1,12 +1,1 @@
-2021-04-22 06:23:27 +0000 [warn]: #0 send an error event to @ERROR: error_class=Fluent::Plugin::ElasticsearchErrorHandler::ElasticsearchError error="400 - Rejected by Elasticsearch" location=nil
- tag="kubernetes.var.log.containers.cattle-cluster-agent-6cd578bcdc-qwnvm_cattle-system_cluster-register-57eed022fe036eed98e31950af81f9b5d44a11f6467828ea4ebdae761f704089.log" time=2021-04-22 06:
-20:57.628500512 +0000
-2021-04-22 06:23:27 +0000 [warn]: #0 send an error event to @ERROR: error_class=Fluent::Plugin::ElasticsearchErrorHandler::ElasticsearchError error="400 - Rejected by Elasticsearch" location=nil
- tag="kubernetes.var.log.containers.cattle-cluster-agent-6cd578bcdc-qwnvm_cattle-system_cluster-register-57eed022fe036eed98e31950af81f9b5d44a11f6467828ea4ebdae761f704089.log" time=2021-04-22 06:
-21:26.005645262 +0000
-2021-04-22 06:23:27 +0000 [warn]: #0 send an error event to @ERROR: error_class=Fluent::Plugin::ElasticsearchErrorHandler::ElasticsearchError error="400 - Rejected by Elasticsearch" location=nil
- tag="kubernetes.var.log.containers.cattle-cluster-agent-6cd578bcdc-qwnvm_cattle-system_cluster-register-57eed022fe036eed98e31950af81f9b5d44a11f6467828ea4ebdae761f704089.log" time=2021-04-22 06:
-21:44.331712636 +0000
-2021-04-22 06:23:27 +0000 [warn]: #0 send an error event to @ERROR: error_class=Fluent::Plugin::ElasticsearchErrorHandler::ElasticsearchError error="400 - Rejected by Elasticsearch" location=nil
- tag="kubernetes.var.log.containers.cattle-cluster-agent-6cd578bcdc-qwnvm_cattle-system_cluster-register-57eed022fe036eed98e31950af81f9b5d44a11f6467828ea4ebdae761f704089.log" time=2021-04-22 06:
-21:44.331925540 +0000
+ghp_Mfn3MAiFdITbCyHSvsPRQgsd1jMsj80
