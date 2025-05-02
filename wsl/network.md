@@ -1,0 +1,1 @@
+1. network为镜像模式下(mirror),本地浏览器可通过`127.0.0.1:port`访问docker启动应用，不能使用本机局域网ip访问。局域网其他机器可使用`局域网ip:port`访问wsl2 docker启动应用
