@@ -1,6 +1,6 @@
 # Terraform Azure (AzureRM) Provider: How to Use & Examples - 翻译
 
-> [原文链接](https://spacelift.io/blog/terraform-azurerm-provider)  因原文示例资源已废弃，对原文示例做了修改, 个人环境如下
+> [原文链接](https://spacelift.io/blog/terraform-azurerm-provider)  因原文示例资源已废弃，对原文示例做了修改([代码](https://github.com/xinpaladin/terraform-azure-setup.git)), 个人环境如下
 ```
 Terraform v1.12.0
 azure-cli 2.74.0
